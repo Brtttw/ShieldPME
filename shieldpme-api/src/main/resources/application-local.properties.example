@@ -1,0 +1,8 @@
+# Copie este arquivo para "application-local.properties" (mesma pasta) e preencha.
+# O arquivo application-local.properties esta no .gitignore: nunca vai para o Git.
+
+# Senha do usuario "sa" do SQL Server
+spring.datasource.password=COLOQUE_A_SENHA_DO_SA_AQUI
+
+# Opcional: segredo fixo do JWT (minimo 32 caracteres) para os logins sobreviverem a reinicios
+#shieldpme.jwt.secret=troque-por-uma-frase-longa-com-mais-de-32-caracteres
