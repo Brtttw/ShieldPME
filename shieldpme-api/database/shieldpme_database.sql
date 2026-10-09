@@ -1,39 +1,11 @@
-﻿-- =====================================================================
---  ShieldPME - banco de dados (SQL Server)
---
---  COMO EXECUTAR: abra este arquivo no SSMS (ou Azure Data Studio) e execute
---  tudo de uma vez (F5). Pode rodar quantas vezes quiser: ele NUNCA apaga dados.
---    - cria o banco ShieldPME somente se ele ainda nao existir;
---    - cria cada tabela somente se ela ainda nao existir;
---    - insere os dados iniciais (planos, servicos, blog, ferramentas)
---      somente se a tabela correspondente estiver vazia.
---
---  Arquivo salvo em UTF-8 (com BOM) para os acentos ficarem corretos.
---
---  Convencao de nomes (a mesma da base da escola): tabelas em PascalCase no
---  singular (Usuario), colunas em camelCase (dataCadastro).
--- =====================================================================
-
--- ---------------------------------------------------------------------
---  ZERAR TUDO (uso MANUAL, DESTROI todos os dados do ShieldPME).
---  So use durante o desenvolvimento. Para usar, tire os "--" das 4 linhas:
---
---  USE master;
---  GO
---  IF DB_ID('ShieldPME') IS NOT NULL ALTER DATABASE ShieldPME SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
---  IF DB_ID('ShieldPME') IS NOT NULL DROP DATABASE ShieldPME;
---  GO
---  (depois execute o resto deste arquivo normalmente)
--- ---------------------------------------------------------------------
-
-USE master;
+﻿USE master;
 GO
 
-IF DB_ID('ShieldPME') IS NULL
-    CREATE DATABASE ShieldPME;
+IF DB_ID('ShieldPME_School') IS NULL
+    CREATE DATABASE ShieldPME_School;
 GO
 
-USE ShieldPME;
+USE ShieldPME_School;
 GO
 
 
