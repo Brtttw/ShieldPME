@@ -13,9 +13,6 @@ import br.itb.projeto.shieldpme.dto.ConteudoDTO.PostDTO;
 import br.itb.projeto.shieldpme.dto.ConteudoDTO.ServicoDTO;
 import br.itb.projeto.shieldpme.service.ConteudoService;
 
-/**
- * Conteúdo público do site, somente leitura: planos, serviços, blog e ferramentas.
- */
 @RestController
 @RequestMapping("/api")
 public class ConteudoController {

@@ -7,9 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-/**
- * Mensagem enviada pelo formulário da página Contato (adaptação da antiga "Mensagem").
- */
 @Entity
 @Table(name = "ContatoMensagem")
 public class ContatoMensagem {

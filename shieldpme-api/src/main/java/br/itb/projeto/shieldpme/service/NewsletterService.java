@@ -22,7 +22,7 @@ public class NewsletterService {
     public void inscrever(NewsletterRequest req) {
         String email = req.email().trim().toLowerCase(Locale.ROOT);
 
-        // Email já inscrito não é erro: o resultado para o visitante é o mesmo ("cadastro realizado")
+        // email repetido não é erro
         if (newsletterInscricaoRepository.existsByEmail(email)) {
             return;
         }

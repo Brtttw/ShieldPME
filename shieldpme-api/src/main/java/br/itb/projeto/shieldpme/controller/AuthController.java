@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.itb.projeto.shieldpme.dto.AuthDTO.CadastroRequest;
-import br.itb.projeto.shieldpme.dto.AuthDTO.GoogleRequest;
 import br.itb.projeto.shieldpme.dto.AuthDTO.LoginRequest;
-import br.itb.projeto.shieldpme.dto.AuthDTO.LoginResponse;
 import br.itb.projeto.shieldpme.dto.AuthDTO.UsuarioResumo;
 import br.itb.projeto.shieldpme.service.AuthService;
 import jakarta.validation.Valid;
@@ -26,18 +24,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public LoginResponse login(@Valid @RequestBody LoginRequest req) {
+    public UsuarioResumo login(@Valid @RequestBody LoginRequest req) {
         return authService.login(req);
     }
 
-    // O front lê o corpo da resposta como JSON, então o 201 precisa vir COM corpo.
+    // o front lê o corpo do 201 como json, então não pode ir vazio
     @PostMapping("/cadastro")
     public ResponseEntity<UsuarioResumo> cadastro(@Valid @RequestBody CadastroRequest req) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.cadastrar(req));
-    }
-
-    @PostMapping("/google")
-    public LoginResponse google(@Valid @RequestBody GoogleRequest req) {
-        return authService.loginComGoogle(req);
     }
 }

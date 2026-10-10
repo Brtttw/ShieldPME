@@ -9,9 +9,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-/**
- * Item da lista de recursos de uma ferramenta. Somente leitura.
- */
 @Entity
 @Table(name = "FerramentaRecurso")
 public class FerramentaRecurso {
@@ -28,7 +25,6 @@ public class FerramentaRecurso {
 
     private int ordem;
 
-    /** Exigido pelo JPA. */
     protected FerramentaRecurso() {
     }
 

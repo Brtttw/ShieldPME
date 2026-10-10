@@ -8,10 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-/**
- * Conta de acesso. nivelAcesso: ADMIN ou USER. statusUsuario: ATIVO ou INATIVO.
- * senhaHash guarda o BCrypt (nunca a senha); é null em contas criadas só pelo Google.
- */
 @Entity
 @Table(name = "Usuario")
 public class Usuario {
@@ -27,10 +23,6 @@ public class Usuario {
     private String email;
 
     private String senhaHash;
-
-    private String fotoUrl;
-
-    private String nivelAcesso = "USER";
 
     private String statusUsuario = "ATIVO";
 
@@ -62,22 +54,6 @@ public class Usuario {
 
     public void setSenhaHash(String senhaHash) {
         this.senhaHash = senhaHash;
-    }
-
-    public String getFotoUrl() {
-        return fotoUrl;
-    }
-
-    public void setFotoUrl(String fotoUrl) {
-        this.fotoUrl = fotoUrl;
-    }
-
-    public String getNivelAcesso() {
-        return nivelAcesso;
-    }
-
-    public void setNivelAcesso(String nivelAcesso) {
-        this.nivelAcesso = nivelAcesso;
     }
 
     public String getStatusUsuario() {

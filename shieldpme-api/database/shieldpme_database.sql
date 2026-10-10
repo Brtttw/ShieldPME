@@ -8,20 +8,17 @@ GO
 USE ShieldPME_School;
 GO
 
-
--- =====================================================================
---  1) CONTEUDO DO SITE (somente leitura para o front)
--- =====================================================================
+-- conteudo do site
 
 IF OBJECT_ID('dbo.Plano', 'U') IS NULL
 CREATE TABLE dbo.Plano (
     id           INT            IDENTITY(1,1) NOT NULL,
-    codigo       VARCHAR(20)    NOT NULL,                 -- usado na URL: /checkout/{codigo}
+    codigo       VARCHAR(20)    NOT NULL,
     nome         NVARCHAR(50)   NOT NULL,
     descricao    NVARCHAR(500)  NOT NULL,
     precoMensal  DECIMAL(10,2)  NOT NULL,
-    precoAnual   DECIMAL(10,2)  NOT NULL,                 -- "anual a vista"
-    destaque     BIT            NOT NULL DEFAULT 0,       -- selo "Mais Popular"
+    precoAnual   DECIMAL(10,2)  NOT NULL,
+    destaque     BIT            NOT NULL DEFAULT 0,
     ativo        BIT            NOT NULL DEFAULT 1,
     ordem        INT            NOT NULL DEFAULT 0,
     CONSTRAINT PK_Plano        PRIMARY KEY (id),
@@ -47,7 +44,7 @@ CREATE TABLE dbo.Servico (
     id                INT            IDENTITY(1,1) NOT NULL,
     titulo            NVARCHAR(100)  NOT NULL,
     descricao         NVARCHAR(300)  NOT NULL,
-    iconeArquivo      VARCHAR(100)   NOT NULL,            -- arquivo em /imagens do front
+    iconeArquivo      VARCHAR(100)   NOT NULL,
     textoAlternativo  NVARCHAR(150)  NOT NULL,
     ativo             BIT            NOT NULL DEFAULT 1,
     ordem             INT            NOT NULL DEFAULT 0,
@@ -61,7 +58,7 @@ CREATE TABLE dbo.Postagem (
     titulo            NVARCHAR(200)  NOT NULL,
     resumo            NVARCHAR(500)  NOT NULL,
     publicadoEm       DATE           NOT NULL,
-    imagemArquivo     VARCHAR(100)   NOT NULL,            -- arquivo em /imagens do front
+    imagemArquivo     VARCHAR(100)   NOT NULL,
     textoAlternativo  NVARCHAR(150)  NOT NULL,
     ativo             BIT            NOT NULL DEFAULT 1,
     CONSTRAINT PK_Postagem PRIMARY KEY (id)
@@ -92,20 +89,17 @@ CREATE TABLE dbo.FerramentaRecurso (
 );
 GO
 
-
--- =====================================================================
---  2) USUARIOS (login / cadastro)
--- =====================================================================
+-- usuarios
 
 IF OBJECT_ID('dbo.Usuario', 'U') IS NULL
 CREATE TABLE dbo.Usuario (
     id             INT            IDENTITY(1,1) NOT NULL,
     nome           NVARCHAR(150)  NOT NULL,
-    email          NVARCHAR(254)  NOT NULL,               -- e o login do usuario
-    senhaHash      VARCHAR(100)   NULL,                   -- BCrypt (nunca a senha em texto). NULL = conta criada so pelo Google
-    fotoUrl        NVARCHAR(500)  NULL,                   -- foto do perfil Google (opcional)
-    nivelAcesso    VARCHAR(10)    NOT NULL DEFAULT 'USER',   -- ADMIN ou USER
-    statusUsuario  VARCHAR(10)    NOT NULL DEFAULT 'ATIVO',  -- ATIVO ou INATIVO
+    email          NVARCHAR(254)  NOT NULL,
+    senhaHash      VARCHAR(100)   NULL,  -- bcrypt
+    fotoUrl        NVARCHAR(500)  NULL,  -- nao usado pela api
+    nivelAcesso    VARCHAR(10)    NOT NULL DEFAULT 'USER',  -- nao usado pela api
+    statusUsuario  VARCHAR(10)    NOT NULL DEFAULT 'ATIVO',
     dataCadastro   DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
     CONSTRAINT PK_Usuario              PRIMARY KEY (id),
     CONSTRAINT UQ_Usuario_email        UNIQUE (email),
@@ -114,12 +108,8 @@ CREATE TABLE dbo.Usuario (
 );
 GO
 
+-- formularios
 
--- =====================================================================
---  3) DADOS ENVIADOS PELOS VISITANTES
--- =====================================================================
-
--- Formulario da pagina Contato
 IF OBJECT_ID('dbo.ContatoMensagem', 'U') IS NULL
 CREATE TABLE dbo.ContatoMensagem (
     id        INT            IDENTITY(1,1) NOT NULL,
@@ -132,7 +122,6 @@ CREATE TABLE dbo.ContatoMensagem (
 );
 GO
 
--- Newsletter do rodape
 IF OBJECT_ID('dbo.NewsletterInscricao', 'U') IS NULL
 CREATE TABLE dbo.NewsletterInscricao (
     id              INT            IDENTITY(1,1) NOT NULL,
@@ -144,28 +133,22 @@ CREATE TABLE dbo.NewsletterInscricao (
 );
 GO
 
-
--- =====================================================================
---  4) ASSINATURAS (checkout)
---  Pagamento SIMULADO: nao existe gateway, entao nao ha tabela de pagamentos;
---  guardamos apenas a forma de pagamento e as parcelas. Numero de cartao e CVV
---  NUNCA sao gravados.
--- =====================================================================
+-- assinaturas: pagamento simulado, nao ha tabela de pagamento nem dados de cartao
 
 IF OBJECT_ID('dbo.Assinatura', 'U') IS NULL
 CREATE TABLE dbo.Assinatura (
     id                INT            IDENTITY(1,1) NOT NULL,
     planoId           INT            NOT NULL,
-    usuarioId         INT            NULL,                -- NULL: o checkout nao exige login
+    usuarioId         INT            NULL,  -- nao usado pela api (checkout sem login)
     nome              NVARCHAR(150)  NOT NULL,
     email             NVARCHAR(254)  NOT NULL,
     telefone          VARCHAR(20)    NOT NULL,
     cpf               VARCHAR(14)    NOT NULL,
     empresa           NVARCHAR(150)  NOT NULL,
-    valorMensal       DECIMAL(10,2)  NOT NULL,            -- preco do plano NO MOMENTO da compra
-    metodoPagamento   VARCHAR(10)    NOT NULL,            -- credito, debito, pix ou boleto
+    valorMensal       DECIMAL(10,2)  NOT NULL,  -- preco no momento da compra
+    metodoPagamento   VARCHAR(10)    NOT NULL,
     parcelas          TINYINT        NOT NULL DEFAULT 1,
-    statusAssinatura  VARCHAR(10)    NOT NULL DEFAULT 'ATIVA',   -- ATIVA ou CANCELADA
+    statusAssinatura  VARCHAR(10)    NOT NULL DEFAULT 'ATIVA',
     criadoEm          DATETIME2(0)   NOT NULL DEFAULT SYSDATETIME(),
     CONSTRAINT PK_Assinatura          PRIMARY KEY (id),
     CONSTRAINT FK_Assinatura_Plano    FOREIGN KEY (planoId)   REFERENCES dbo.Plano(id),
@@ -177,11 +160,7 @@ CREATE TABLE dbo.Assinatura (
 );
 GO
 
-
--- =====================================================================
---  5) DADOS INICIAIS (so inserem se a tabela estiver vazia)
---     Os mesmos textos que o front usa em src/data (modo mock).
--- =====================================================================
+-- dados iniciais (so entram se a tabela estiver vazia)
 
 IF NOT EXISTS (SELECT 1 FROM dbo.Plano)
 BEGIN
@@ -280,15 +259,6 @@ BEGIN
 END
 GO
 
-
--- =====================================================================
---  Para tornar alguem ADMIN: cadastre a conta pelo site e depois rode
---  (troque o e-mail). Nao ha usuario/senha padrao de proposito.
---
---  UPDATE dbo.Usuario SET nivelAcesso = 'ADMIN' WHERE email = 'seu@email.com';
--- =====================================================================
-
--- Conferencia rapida (deve mostrar 3, 14, 8, 6, 6, 24 na primeira execucao)
 SELECT 'Plano' AS tabela, COUNT(*) AS linhas FROM dbo.Plano
 UNION ALL SELECT 'PlanoBeneficio',   COUNT(*) FROM dbo.PlanoBeneficio
 UNION ALL SELECT 'Servico',          COUNT(*) FROM dbo.Servico

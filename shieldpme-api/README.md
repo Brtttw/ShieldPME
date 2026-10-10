@@ -1,73 +1,58 @@
 # ShieldPME API
 
-API do site ShieldPME. Spring Boot 4 · Java 21 · JPA · SQL Server.
-Adaptada da API de exemplo da escola (a antiga "pizzaria").
+Spring Boot 4, Java 21, JPA e SQL Server. O banco é o `ShieldPME_School`; o `ShieldPME` do TCC não é usado.
 
-## Como rodar
+## Rodar
 
-1. **Banco:** abra `database/shieldpme_database.sql` no SSMS e execute tudo (F5).
-   Pode executar quantas vezes quiser: nunca apaga dados (veja o cabeçalho do arquivo).
-2. **Senha do banco:** copie `src/main/resources/application-local.properties.example`
-   para `src/main/resources/application-local.properties` e coloque a senha do `sa`.
-   Esse arquivo está no `.gitignore` e não vai para o Git.
-3. **API:** `./mvnw spring-boot:run` (ou rode a classe `Startup` no IntelliJ). Sobe em `http://localhost:8080`.
-4. **Front:** em `shieldpme-front/.env` troque `VITE_USE_MOCK=true` por `VITE_USE_MOCK=false`
-   e rode `npm run dev` (o Vite encaminha `/api` para a porta 8080).
+1. SQL Server no ar (container que já existe) e `database/shieldpme_database.sql` executado nele.
+2. API, na pasta `shieldpme-api`:
+   ```bash
+   DB_PASSWORD='senha_do_sa' ./mvnw spring-boot:run
+   ```
+   Se o SQL Server não estiver na porta 1433, acrescente `DB_PORT=...`. Também dá para copiar
+   `src/main/resources/application-local.properties.example` para `application-local.properties`
+   e colocar a senha ali (esse arquivo não vai pro git).
+3. Front: `cd ../shieldpme-front && npm run dev` (com `VITE_USE_MOCK=false` no `.env`).
+4. Teste rápido com a API no ar: `node scripts/smoke-test.mjs` (ou passando `http://localhost:5173` para testar pelo proxy do vite).
+   Ele grava dados de teste (emails `smoke-...@example.com`).
 
-> `mvn package` executa o `StartupTests`, que precisa do banco no ar. Sem banco: `./mvnw package -DskipTests`.
+Carregar o SQL de novo, se precisar (o script não apaga nada):
+
+```bash
+docker cp database/shieldpme_database.sql shieldpme-sqlserver:/tmp/escola.sql
+docker exec -e SQLCMDPASSWORD="$SA_PASSWORD" shieldpme-sqlserver \
+  /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -C -b -f 65001 -i /tmp/escola.sql
+```
+
+(em imagens mais antigas o sqlcmd fica em `/opt/mssql-tools/bin/sqlcmd` e não precisa do `-C`)
 
 ## Endpoints
 
-Erros sempre voltam como `{ "mensagem": "texto para o usuário" }`.
+Todos públicos. Erros voltam como `{ "mensagem": "..." }`.
 
-| Método | Rota | Acesso | Resposta |
-|---|---|---|---|
-| GET | `/api/planos` | público | lista de planos (com `beneficios`) |
-| GET | `/api/planos/{codigo}` | público | plano (404 se não existir) |
-| GET | `/api/servicos` | público | lista de serviços |
-| GET | `/api/blog/posts` | público | lista de posts |
-| GET | `/api/ferramentas` | público | lista de ferramentas (com `recursos`) |
-| POST | `/api/auth/cadastro` | público | 201 + `{ nome, email, foto }` |
-| POST | `/api/auth/login` | público | `{ token, usuario: { nome, email, foto } }` |
-| POST | `/api/auth/google` | público | `{ token, usuario }` (precisa de internet) |
-| POST | `/api/contatos` | público | 204 |
-| POST | `/api/newsletter` | público | 204 |
-| POST | `/api/pagamentos/pix` | público | `{ copiaECola, qrCodeData }` |
-| POST | `/api/assinaturas` | público (se logado, liga ao usuário) | 201 + `{ id, planoCodigo, valorMensal, status }` |
-| GET | `/api/contatos` | **ADMIN** | mensagens recebidas pelo formulário de contato |
+| Método | Rota | Resposta |
+|---|---|---|
+| GET | `/api/planos`, `/api/planos/{codigo}` | planos com `beneficios` |
+| GET | `/api/servicos` | serviços |
+| GET | `/api/blog/posts` | posts |
+| GET | `/api/ferramentas` | ferramentas com `recursos` |
+| POST | `/api/auth/cadastro` | 201 com `{ nome, email }` |
+| POST | `/api/auth/login` | 200 com `{ nome, email }` |
+| POST | `/api/contatos` | 204 |
+| POST | `/api/newsletter` | 204 |
+| POST | `/api/pagamentos/pix` | `{ copiaECola, qrCodeData }` |
+| POST | `/api/assinaturas` | 201 com `{ id, planoCodigo, valorMensal, status }` |
 
-O token do login é um JWT (`Authorization: Bearer <token>`), válido por 8 horas.
-
-## Tornar alguém ADMIN
-
-Não existe usuário/senha padrão. Cadastre a conta pelo site e rode no SQL Server:
-
-```sql
-UPDATE dbo.Usuario SET nivelAcesso = 'ADMIN' WHERE email = 'seu@email.com';
-```
-
-Depois faça login de novo (o nível de acesso vai dentro do token) e chame `GET /api/contatos` com o token.
+Não há token nem sessão: o site não tem área que exija login. A senha é guardada com BCrypt.
+O pagamento é simulado (sem gateway): o preço vem sempre do banco e dados de cartão nunca são gravados.
 
 ## Estrutura
 
 ```
 src/main/java/br/itb/projeto/shieldpme
-├── config/      CorsConfig, SecurityConfig, JwtAuthFilter
-├── controller/  endpoints REST + ApiExceptionHandler (erros em JSON)
-├── dto/         formato exato dos JSONs que o front envia/recebe
-├── model/
-│   ├── entity/      tabelas (JPA)
-│   └── repository/  acesso ao banco (Spring Data)
-└── service/     regras de negócio
+  config/       CorsConfig
+  controller/   endpoints e ApiExceptionHandler
+  dto/          JSONs de entrada e saída
+  model/        entity e repository
+  service/      regras
 ```
-
-## Observações
-
-- **Pagamento simulado:** não há gateway. A assinatura nasce `ATIVA`, o preço vem sempre do banco
-  (nunca do front) e **número de cartão/CVV nunca são gravados nem logados**.
-- **PIX:** o "copia e cola" tem formato e CRC válidos, mas a chave é fictícia.
-- **Login com Google:** valida o token do Google no backend. Precisa de internet e de a origem
-  `http://localhost:5173` estar autorizada no Client ID do Google Cloud.
-- **JWT:** sem `shieldpme.jwt.secret` configurado, a API gera um segredo aleatório a cada início
-  (os logins anteriores deixam de valer ao reiniciar). Para fixar, defina o segredo (32+ caracteres)
-  no `application-local.properties`.

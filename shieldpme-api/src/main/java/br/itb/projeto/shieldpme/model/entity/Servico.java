@@ -6,9 +6,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-/**
- * Serviço exibido na home. Somente leitura.
- */
 @Entity
 @Table(name = "Servico")
 public class Servico {
@@ -29,7 +26,6 @@ public class Servico {
 
     private int ordem;
 
-    /** Exigido pelo JPA. */
     protected Servico() {
     }
 

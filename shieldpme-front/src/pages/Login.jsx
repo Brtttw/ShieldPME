@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import GoogleLoginButton from '../components/forms/GoogleLoginButton';
-import { login, loginComGoogle } from '../services/authService';
+import { login } from '../services/authService';
 
 const CAMPOS_VAZIOS = { email: '', senha: '' };
 
@@ -34,33 +33,15 @@ export default function Login() {
     }
   }
 
-  async function aoEntrarComGoogle(resposta) {
-    try {
-      const usuario = await loginComGoogle(resposta.credential);
-      alert('Bem-vindo ' + usuario.nome);
-      console.log('Email:', usuario.email);
-      console.log('Foto:', usuario.foto);
-      navigate('/');
-    } catch (erro) {
-      alert(erro.message);
-    }
-  }
-
   return (
     <form className="form" onSubmit={enviar}>
       <h2>Entrar</h2>
-
-      <div className="google-login">
-        <GoogleLoginButton aoReceberCredencial={aoEntrarComGoogle} />
-      </div>
-
-      <p style={{ textAlign: 'center', margin: '15px 0', color: '#aaa' }}>ou</p>
 
       <div className="input-group">
         <input
           type="text"
           name="email"
-          placeholder="Email ou usuário"
+          placeholder="Email"
           value={campos.email}
           onChange={alterar}
         />

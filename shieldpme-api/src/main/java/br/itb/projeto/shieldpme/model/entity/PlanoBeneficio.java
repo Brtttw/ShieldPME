@@ -9,9 +9,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-/**
- * Item da lista de benefícios de um plano. Somente leitura.
- */
 @Entity
 @Table(name = "PlanoBeneficio")
 public class PlanoBeneficio {
@@ -28,7 +25,6 @@ public class PlanoBeneficio {
 
     private int ordem;
 
-    /** Exigido pelo JPA. */
     protected PlanoBeneficio() {
     }
 

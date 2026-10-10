@@ -11,9 +11,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 
-/**
- * Plano de assinatura exibido no site (tabela Plano). Somente leitura.
- */
 @Entity
 @Table(name = "Plano")
 public class Plano {
@@ -42,7 +39,6 @@ public class Plano {
     @OrderBy("ordem ASC")
     private List<PlanoBeneficio> beneficios = new ArrayList<>();
 
-    /** Exigido pelo JPA. */
     protected Plano() {
     }
 

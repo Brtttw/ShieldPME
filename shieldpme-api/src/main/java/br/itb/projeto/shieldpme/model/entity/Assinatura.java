@@ -11,10 +11,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-/**
- * Assinatura de um plano feita no checkout (pagamento simulado).
- * usuario é null quando o cliente não estava logado.
- */
 @Entity
 @Table(name = "Assinatura")
 public class Assinatura {
@@ -26,10 +22,6 @@ public class Assinatura {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "planoId", nullable = false)
     private Plano plano;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuarioId")
-    private Usuario usuario;
 
     private String nome;
 
@@ -61,14 +53,6 @@ public class Assinatura {
 
     public void setPlano(Plano plano) {
         this.plano = plano;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
     }
 
     public String getNome() {

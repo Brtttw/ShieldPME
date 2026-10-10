@@ -8,9 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-/**
- * Inscrição na newsletter do rodapé.
- */
 @Entity
 @Table(name = "NewsletterInscricao")
 public class NewsletterInscricao {

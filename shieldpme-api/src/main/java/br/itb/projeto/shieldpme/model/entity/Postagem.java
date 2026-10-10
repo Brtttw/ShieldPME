@@ -7,9 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-/**
- * Postagem do blog. Somente leitura.
- */
 @Entity
 @Table(name = "Postagem")
 public class Postagem {
@@ -30,7 +27,6 @@ public class Postagem {
 
     private boolean ativo;
 
-    /** Exigido pelo JPA. */
     protected Postagem() {
     }
 

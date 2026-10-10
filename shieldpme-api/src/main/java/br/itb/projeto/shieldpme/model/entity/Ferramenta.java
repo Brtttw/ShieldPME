@@ -10,9 +10,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 
-/**
- * Ferramenta de cibersegurança exibida na página Ferramentas. Somente leitura.
- */
 @Entity
 @Table(name = "Ferramenta")
 public class Ferramenta {
@@ -33,7 +30,6 @@ public class Ferramenta {
     @OrderBy("ordem ASC")
     private List<FerramentaRecurso> recursos = new ArrayList<>();
 
-    /** Exigido pelo JPA. */
     protected Ferramenta() {
     }
 

@@ -20,7 +20,6 @@ public class NewsletterController {
         this.newsletterService = newsletterService;
     }
 
-    // O front espera 204, sem corpo.
     @PostMapping
     public ResponseEntity<Void> inscrever(@Valid @RequestBody NewsletterRequest req) {
         newsletterService.inscrever(req);

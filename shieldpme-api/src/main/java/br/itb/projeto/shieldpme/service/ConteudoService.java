@@ -22,10 +22,7 @@ import br.itb.projeto.shieldpme.model.repository.PlanoRepository;
 import br.itb.projeto.shieldpme.model.repository.PostagemRepository;
 import br.itb.projeto.shieldpme.model.repository.ServicoRepository;
 
-/**
- * Conteúdo público do site (planos, serviços, blog, ferramentas). Só leitura.
- * O @Transactional é necessário porque as listas (benefícios/recursos) são carregadas sob demanda.
- */
+// transacional porque benefícios e recursos são carregados sob demanda
 @Service
 @Transactional(readOnly = true)
 public class ConteudoService {
@@ -65,8 +62,6 @@ public class ConteudoService {
         return ferramentaRepository.findByAtivoTrueOrderByOrdemAsc().stream().map(this::paraFerramenta).toList();
     }
 
-    /* ================= entidade -> JSON do front ================= */
-
     private PlanoDTO paraPlano(Plano p) {
         List<String> beneficios = p.getBeneficios().stream().map(PlanoBeneficio::getDescricao).toList();
         return new PlanoDTO(p.getId(), p.getCodigo(), p.getNome(), p.getDescricao(),
@@ -78,7 +73,6 @@ public class ConteudoService {
     }
 
     private PostDTO paraPost(Postagem p) {
-        // LocalDate.toString() = yyyy-MM-dd, exatamente o que o front espera
         return new PostDTO(p.getId(), p.getTitulo(), p.getResumo(), p.getPublicadoEm().toString(),
                 p.getImagemArquivo(), p.getTextoAlternativo());
     }

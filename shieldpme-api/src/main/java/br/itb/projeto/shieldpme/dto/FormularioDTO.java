@@ -7,15 +7,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 
-/**
- * Formulários públicos: Contato e Newsletter.
- */
 public final class FormularioDTO {
 
     private FormularioDTO() {
     }
 
-    /** POST /api/contatos */
     public record ContatoRequest(
             @NotBlank(message = "Informe seu nome.")
             @Size(max = 150, message = "O nome pode ter no máximo 150 caracteres.") String nome,
@@ -31,11 +27,6 @@ public final class FormularioDTO {
             @Size(max = 2000, message = "A mensagem pode ter no máximo 2000 caracteres.") String mensagem) {
     }
 
-    /** GET /api/contatos (somente ADMIN) */
-    public record ContatoResposta(Long id, String nome, String email, String assunto, String mensagem, String criadoEm) {
-    }
-
-    /** POST /api/newsletter ("dataNascimento" = yyyy-MM-dd ou null) */
     public record NewsletterRequest(
             @NotBlank(message = "Informe seu email.")
             @Email(message = "Informe um email válido.")
