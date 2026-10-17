@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { cadastrar } from '../services/authService';
+import { sessao } from '../utils/sessao';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -23,9 +24,11 @@ export default function Register() {
     if (Object.values(novosErros).some(Boolean)) return;
 
     try {
-      await cadastrar({ nome: campos.nome.trim(), email: campos.email.trim(), senha: campos.senha });
-      alert('Cadastro realizado com sucesso!');
-      navigate('/login');
+      const nome = campos.nome.trim();
+      const email = campos.email.trim();
+      const usuario = await cadastrar({ nome, email, senha: campos.senha });
+      sessao.salvar(usuario ?? { nome, email });
+      navigate('/bem-vindo', { state: { origem: 'cadastro' } });
     } catch (erro) {
       alert(erro.message);
     }

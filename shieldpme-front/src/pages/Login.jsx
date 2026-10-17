@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../services/authService';
+import { sessao } from '../utils/sessao';
 
 const CAMPOS_VAZIOS = { email: '', senha: '' };
 
@@ -24,10 +25,12 @@ export default function Login() {
     if (novosErros.email || novosErros.senha) return;
 
     try {
-      await login({ email: campos.email.trim(), senha: campos.senha });
-      alert('Login realizado!');
+      const email = campos.email.trim();
+      const usuario = await login({ email, senha: campos.senha });
+      // no modo mock a API não responde, então usa o que foi digitado
+      sessao.salvar(usuario ?? { nome: email, email });
       setCampos(CAMPOS_VAZIOS);
-      navigate('/');
+      navigate('/bem-vindo', { state: { origem: 'login' } });
     } catch (erro) {
       alert(erro.message);
     }

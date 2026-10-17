@@ -12,6 +12,7 @@ import Register from './pages/Register';
 import PaginaLegal from './pages/PaginaLegal';
 import Contato from './pages/Contato';
 import MinhaConta from './pages/MinhaConta';
+import BemVindo from './pages/BemVindo';
 import Blog from './pages/Blog';
 import Ferramentas from './pages/Ferramentas';
 import Checkout from './pages/Checkout';
@@ -64,6 +65,7 @@ export default function App() {
         <Route path="/termos" element={<PaginaLegal conteudo={termos} />} />
         <Route path="/contato" element={<Contato />} />
         <Route path="/minha-conta" element={<MinhaConta />} />
+        <Route path="/bem-vindo" element={<BemVindo />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/ferramentas" element={<Ferramentas />} />
         <Route path="/checkout/:plano" element={<Checkout />} />

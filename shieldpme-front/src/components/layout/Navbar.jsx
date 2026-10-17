@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { sessao } from '../../utils/sessao';
 
 const LINKS = [
   { rotulo: 'Início', secao: 'home' },
@@ -12,6 +13,8 @@ const ROLAGEM_PARA_ENCOLHER_PX = 20;
 
 export default function Navbar() {
   const navigate = useNavigate();
+  useLocation(); // re-renderiza a cada troca de rota, para refletir login/logout
+  const logado = sessao.obter() !== null;
   const [encolhida, setEncolhida] = useState(false);
 
   useEffect(() => {
@@ -31,8 +34,8 @@ export default function Navbar() {
           </li>
         ))}
         <li>
-          <button type="button" onClick={() => navigate('/login')}>
-            Login
+          <button type="button" onClick={() => navigate(logado ? '/bem-vindo' : '/login')}>
+            {logado ? 'Minha área' : 'Login'}
           </button>
         </li>
       </ul>
